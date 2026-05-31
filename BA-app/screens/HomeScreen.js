@@ -173,6 +173,7 @@ const HomeScreen = ({ navigation }) => {
                 <Picker.Item label="Datum: Oudste eerst" value="date-oldest" />
             </Picker>
 
+            {/*search van producten*/}
             <TextInput style={styles.searchInput} placeholder="Zoek nieuws..." value={nieuwsSearchQuery} onChangeText={setNieuwsSearchQuery} />
 
             {sortedNieuws.map((nieuws) => (

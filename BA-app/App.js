@@ -57,7 +57,7 @@ export default function App() {
               backgroundColor: '#f7fcee',
               borderTopColor: '#f7fcee',
                 padding: 16,
-                height: 120,
+                height: 100,
                  paddingTop: 16,
             },
             tabBarLabelStyle: {
