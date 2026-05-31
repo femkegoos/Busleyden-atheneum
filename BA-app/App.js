@@ -1,6 +1,10 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import HomeScreen from './screens/HomeScreen';
+import CampusDetail from './screens/CampusDetail';
+import ShopDetail from './screens/ShopDetail';
+import NieuwsDetail from './screens/NieuwsDetail';
 
 import { useFonts } from 'expo-font';
 
@@ -22,9 +26,9 @@ function HomeStack() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="CampusDetail" component={ProductDetail} />
-      <Stack.Screen name="ShopDetail" component={BlogDetail} />
-       <Stack.Screen name="NieuwsDetail" component={BlogDetail} />
+      <Stack.Screen name="CampusDetail" component={CampusDetail} />
+      <Stack.Screen name="ShopDetail" component={ShopDetail} />
+      <Stack.Screen name="NieuwsDetail" component={NieuwsDetail} />
     </Stack.Navigator>
   );
 }
