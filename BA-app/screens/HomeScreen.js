@@ -10,6 +10,7 @@ const HomeScreen = ({ navigation }) => {
     const [campuses, setCampuses] = useState([]);
     const [products, setProducts] = useState([]);
 
+    // voorbereiding filter
     const categoryNames = {
         "": "All",
         "6a16f2413598132e63b5b88f": "Kleding",
@@ -20,6 +21,23 @@ const HomeScreen = ({ navigation }) => {
         "6a16f313d851ef2bd4668e80": "0verige",
     };
 
+   //sorteren van de producten 
+ const filteredProducts = products.filter((p) =>
+    (selectedCategory === "" || p.category === selectedCategory) &&
+    p.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+ //filteren van de producten op categorie, naam en prijs
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortOption === "price-asc") return a.price - b.price;
+    if (sortOption === "price-desc") return b.price - a.price;
+    if (sortOption === "name-asc") return a.title.localeCompare(b.title);
+    if (sortOption === "name-desc") return b.title.localeCompare(a.title);
+    return 0;
+  });
+
+
+    // API ophalen voor content dynamisch in te vullen
     useEffect(() => {
         Promise.all([
             fetch('https://api.webflow.com/v2/sites/6a11e2085af61b924447aac9/products', {
