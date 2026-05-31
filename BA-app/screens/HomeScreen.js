@@ -10,6 +10,16 @@ const HomeScreen = ({ navigation }) => {
     const [campuses, setCampuses] = useState([]);
     const [products, setProducts] = useState([]);
 
+    const categoryNames = {
+        "": "All",
+        "6a16f2413598132e63b5b88f": "Kleding",
+        "6a16f275719f7ecaa24c2546": "Baby & kids",
+        "6a16f2a3d851ef2bd4663cd9": "Accessoires",
+        "6a16f2cc8036c41f275614ea": "Food & drinks",
+        "6a16f2e6b4b2caf5acc108e0": "Schrijfgerei",
+        "6a16f313d851ef2bd4668e80": "0verige",
+    };
+
     useEffect(() => {
         Promise.all([
             fetch('https://api.webflow.com/v2/sites/6a11e2085af61b924447aac9/products', {
@@ -57,3 +67,9 @@ const HomeScreen = ({ navigation }) => {
         })
         .catch((error) => console.error('Error:', error));
 }, []);
+return (
+
+  );
+}
+
+export default HomeScreen;
