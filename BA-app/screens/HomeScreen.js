@@ -9,10 +9,16 @@ const HomeScreen = ({ navigation }) => {
     const [Nieuws, setNieuws] = useState([]);
     const [campuses, setCampuses] = useState([]);
     const [products, setProducts] = useState([]);
+
     const [selectedCategory, setSelectedCategory] = useState("");
+
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOption, setSortOption] = useState("");
     const [promotions, setPromotions] = useState(false);
+
+    const [nieuwsSearchQuery, setNieuwsSearchQuery] = useState("");
+    const [nieuwsSortOption, setNieuwsSortOption] = useState("");
+    const [nieuwsPromotions, setNieuwsPromotions] = useState(false);
 
     {/*voorbereiding filter */}
     const categoryNames = {
@@ -92,6 +98,16 @@ const HomeScreen = ({ navigation }) => {
     return (
         
         <ScrollView contentContainerStyle={styles.container}>
+             
+            {/*Campus sectie*/}
+            <Text style={styles.titel}>BA campussen</Text>
+            {campuses.map((campus) => (
+                <CampusCard key={campus.id} name={campus.name} focus={campus.focus} beschrijving={campus.beschrijving} adres={campus.adres} gemeente={campus.gemeente} kleur={campus.kleur} image={campus.image} onPress={() => navigation.navigate('CampusDetail', campus)} />
+            ))}
+
+
+            {/*Webshop sectie*/}
+
             {/*filter systeem met opties van categorie*/}
             <Text style={styles.titel}>Webshop</Text>
             <Picker selectedValue={selectedCategory} onValueChange={setSelectedCategory} style={styles.picker}>
@@ -126,6 +142,8 @@ const HomeScreen = ({ navigation }) => {
                 <ProductCard key={product.id} title={product.title} price={product.price} image={product.image} onPress={() => navigation.navigate('ProductDetail', product)} />
             ))}
 
+
+            {/*Nieuws sectie*/}
             <Text style={styles.titel}>Nieuws</Text>
 
             {Nieuws.map((nieuws) => (
