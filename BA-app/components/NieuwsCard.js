@@ -1,9 +1,9 @@
 import { View, Text } from 'react-native';
 
-export default function BlogCard() {
+export default function NieuwsCard() {
   return (
     <View>
-      <Text>BlogCard</Text>
+      <Text>NieuwsCard</Text>
     </View>
   );
 }
