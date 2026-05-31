@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from './screens/HomeScreen';
 import CampusDetail from './screens/CampusDetail';
 import ShopDetail from './screens/ShopDetail';
@@ -19,6 +20,7 @@ const screenOptions = {
     headerTitleStyle: {
       fontFamily: 'Poppins',
       fontSize: 24,
+      tabBarShowLabel: false,
     },
   };
 
@@ -49,26 +51,27 @@ export default function App() {
       <Tab.Navigator
         screenOptions={{
             headerShown: false,
-            tabBarShowIcon: false,
-            tabBarActiveTintColor: '#ffff',
-            tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.7)',
+            tabBarActiveTintColor: '#4CAF50',
+            tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.4)',
             tabBarStyle: {
               backgroundColor: '#f7fcee',
               borderTopColor: '#f7fcee',
-                paddingBottom: 8,
-                height: 72,
+                padding: 16,
+                height: 120,
+                 paddingTop: 16,
             },
             tabBarLabelStyle: {
-              fontSize: 14,
                 fontFamily: 'PoppinsRegular',
                 fontSize: 18,
+                paddingLeft: 16,
+                paddingRight: 16,
+               
             },
         }}
         >
-        <Tab.Screen name="Studieaanbod" component={HomeStack} options={{tabBarIcon: ()=> null,}} />
-        <Tab.Screen name="Nieuws" component={HomeStack} options={{tabBarIcon: ()=> null,}} />
-        <Tab.Screen name="Over BA" component={HomeStack} options={{tabBarIcon: ()=> null,}} />   
-            <Tab.Screen name="Inschrijven" component={HomeStack} options={{tabBarIcon: ()=> null,}} />   
+        <Tab.Screen name="Scholen" component={HomeStack} options={{tabBarIcon: ({ color, size }) => (<Ionicons name="school" color={color} size={size} />  ),}} />
+        <Tab.Screen name="Webshop" component={HomeStack} options={{tabBarIcon: ({ color, size }) => (<Ionicons name="cart" color={color} size={size} />  ),}} />
+            <Tab.Screen name="Nieuwsjes" component={HomeStack} options={{tabBarIcon: ({ color, size }) => (<Ionicons name="document" color={color} size={size} />  ),}} />   
         </Tab.Navigator>
     </NavigationContainer>
   );
