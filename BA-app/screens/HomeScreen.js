@@ -1,4 +1,4 @@
-import { ScrollView, Textinput, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, TextInput, StyleSheet, Text, View, Switch } from 'react-native';
 import { useRef, useState, useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import NieuwsCard from '../components/NieuwsCard';
@@ -9,8 +9,12 @@ const HomeScreen = ({ navigation }) => {
     const [Nieuws, setNieuws] = useState([]);
     const [campuses, setCampuses] = useState([]);
     const [products, setProducts] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortOption, setSortOption] = useState("");
+    const [promotions, setPromotions] = useState(false);
 
-    // voorbereiding filter
+    {/*voorbereiding filter */}
     const categoryNames = {
         "": "All",
         "6a16f2413598132e63b5b88f": "Kleding",
@@ -21,23 +25,23 @@ const HomeScreen = ({ navigation }) => {
         "6a16f313d851ef2bd4668e80": "0verige",
     };
 
-   //sorteren van de producten 
- const filteredProducts = products.filter((p) =>
-    (selectedCategory === "" || p.category === selectedCategory) &&
-    p.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    {/*sorteren van de producten */}
+    const filteredProducts = products.filter((p) =>
+        (selectedCategory === "" || p.category === selectedCategory) &&
+        p.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
- //filteren van de producten op categorie, naam en prijs
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (sortOption === "price-asc") return a.price - b.price;
-    if (sortOption === "price-desc") return b.price - a.price;
-    if (sortOption === "name-asc") return a.title.localeCompare(b.title);
-    if (sortOption === "name-desc") return b.title.localeCompare(a.title);
-    return 0;
-  });
+    {/*filteren van de producten op categorie, naam en prijs */}
+    const sortedProducts = [...filteredProducts].sort((a, b) => {
+        if (sortOption === "price-asc") return a.price - b.price;
+        if (sortOption === "price-desc") return b.price - a.price;
+        if (sortOption === "name-asc") return a.title.localeCompare(b.title);
+        if (sortOption === "name-desc") return b.title.localeCompare(a.title);
+        return 0;
+    });
 
 
-    // API ophalen voor content dynamisch in te vullen
+    {/*API ophalen voor content dynamisch in te vullen */}
     useEffect(() => {
         Promise.all([
             fetch('https://api.webflow.com/v2/sites/6a11e2085af61b924447aac9/products', {
@@ -83,74 +87,92 @@ const HomeScreen = ({ navigation }) => {
                 image: { uri: item.fieldData.galerij?.[0]?.url },
             })));
         })
-        .catch((error) => console.error('Error:', error));
-}, []);
-return (
-    //filter systeem met opties van categorie
-    <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.Title}>Webshop</Text>
-        <Picker selectedValue={selectedCategory} onValueChange={setSelectedCategory} style={styles.picker}>
-            <Picker.Item label="All" value="" />
-            <Picker.Item label="Kleding" value="Kleding" />
-            <Picker.Item label="Baby & kids" value="Baby & kids" />
-            <Picker.Item label="Accessoires" value="Accessoires" />
-            <Picker.Item label="Food & drinks" value="Food & drinks" />
-            <Picker.Item label="Schrijfgerei" value="Schrijfgerei" />
-            <Picker.Item label="0verige" value="0verige" />
-        </Picker>
+            .catch((error) => console.error('Error:', error));
+    }, []);
+    return (
+        
+        <ScrollView contentContainerStyle={styles.container}>
+            {/*filter systeem met opties van categorie*/}
+            <Text style={styles.titel}>Webshop</Text>
+            <Picker selectedValue={selectedCategory} onValueChange={setSelectedCategory} style={styles.picker}>
+                <Picker.Item label="All" value="" />
+                <Picker.Item label="Kleding" value="Kleding" />
+                <Picker.Item label="Baby & kids" value="Baby & kids" />
+                <Picker.Item label="Accessoires" value="Accessoires" />
+                <Picker.Item label="Food & drinks" value="Food & drinks" />
+                <Picker.Item label="Schrijfgerei" value="Schrijfgerei" />
+                <Picker.Item label="0verige" value="0verige" />
+            </Picker>
 
-        //sorteren van producten 
-        <picker selectedValue={sortOption} onValueChange={setSortOption} style={styles.picker}>
-            <Picker.Item label="Sort by" value="" />
-            <Picker.Item label="Price: Low to High" value="price-asc" />
-            <Picker.Item label="Price: High to Low" value="price-desc" />
-            <Picker.Item label="Name: A to Z" value="name-asc" />
-            <Picker.Item label="Name: Z to A" value="name-desc" />
-        </picker>
+    {/*sorteren van producten*/}
+            <Picker selectedValue={sortOption} onValueChange={setSortOption} style={styles.picker}>
+                <Picker.Item label="Sort by" value="" />
+                <Picker.Item label="Price: Low to High" value="price-asc" />
+                <Picker.Item label="Price: High to Low" value="price-desc" />
+                <Picker.Item label="Name: A to Z" value="name-asc" />
+                <Picker.Item label="Name: Z to A" value="name-desc" />
+            </Picker>
 
-        //search balk
-        <TedxtInput style={styles.searchInput} placeholder="Search products..." value={searchQuery} onChangeText={setSearchQuery} />
+    {/*search balk*/}
+            <TextInput style={styles.searchInput} placeholder="Search products..." value={searchQuery} onChangeText={setSearchQuery} />
 
-       
+            <View style={styles.switchContainer}>
+                <Text>Enkel promoties</Text>
+                <Switch value={promotions} onValueChange={(value) => setPromotions(value)} trackColor={{ false: 'rgba(122, 90, 69, 0.1)', true: '#4CAF50' }} thumbColor={promotions ? '#fff' : '#fff'} />
+       </View>
+
+
             {sortedProducts.map((product) => (
-                <ProductCard key={product.id} title={product.title} price={product.price} image={product.image} onPress={() => navigation.navigate('ProductDetail',  product )} />
+                <ProductCard key={product.id} title={product.title} price={product.price} image={product.image} onPress={() => navigation.navigate('ProductDetail', product)} />
             ))}
 
-            <Text style={styles.Title}>Nieuws</Text>
+            <Text style={styles.titel}>Nieuws</Text>
 
             {Nieuws.map((nieuws) => (
                 <NieuwsCard key={nieuws.id} title={nieuws.name} description={nieuws.description} date={nieuws.date} image={nieuws.image} onPress={() => navigation.navigate('NieuwsDetail', nieuws)} />
             ))}
-    </ScrollView>
-  );
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: '#fff',
+    container: {
+        flexGrow: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        padding: 16,
+        paddingTop: 64,
+    },
+    titel: {
+        fontSize: 32,
+        fontFamily: 'PoppinsBold',
+        marginTop: 32,
+        marginBottom: 16,
+    },
+    searchInput: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+        width: '90%',
+        marginBottom: 16,
+    },
+    picker: {
+        width: '90%',
+        marginBottom: 16,
+    },
+    switchContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    paddingTop: 64,
-  },
-  titel: {
-    fontSize: 32,
-    fontFamily: 'PoppinsBold',
-    marginTop: 32,
-    marginBottom: 16,
-  },
-  searchInput: {
-    borderWidth: 1,
+    marginBottom: 24,
+    justifyContent: 'space-between',
+    width: '90%',
     borderColor: '#ccc',
+    borderWidth: 1,
     borderRadius: 8,
     padding: 10,
-    width: '90%',
-    marginBottom: 16,
-  },
-  picker: {
-    width: '90%',
-    marginBottom: 16,
-  },
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+},
 });
 
 export default HomeScreen;
