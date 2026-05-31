@@ -19,6 +19,7 @@ const HomeScreen = ({ navigation }) => {
     const [nieuwsSearchQuery, setNieuwsSearchQuery] = useState("");
     const [nieuwsSortOption, setNieuwsSortOption] = useState("");
     const [nieuwsPromotions, setNieuwsPromotions] = useState(false);
+    const [nieuwsCategory, setNieuwsCategory] = useState("");
 
     {/*voorbereiding filter */}
     const categoryNames = {
@@ -44,6 +45,17 @@ const HomeScreen = ({ navigation }) => {
         if (sortOption === "name-asc") return a.title.localeCompare(b.title);
         if (sortOption === "name-desc") return b.title.localeCompare(a.title);
         return 0;
+    });
+
+    const filteredNieuws = Nieuws.filter((n) =>
+    (nieuwsCategory === "" || n.tag === nieuwsCategory) &&
+    n.name.toLowerCase().includes(nieuwsSearchQuery.toLowerCase())
+  );
+
+  const sortedNieuws = [...filteredNieuws].sort((a, b) => {
+    if (nieuwsSortOption === "date-newest") return new Date(b.date) - new Date(a.date);
+    if (nieuwsSortOption === "date-oldest") return new Date(a.date) - new Date(b.date);
+    return 0;
     });
 
 
@@ -146,7 +158,24 @@ const HomeScreen = ({ navigation }) => {
             {/*Nieuws sectie*/}
             <Text style={styles.titel}>Nieuws</Text>
 
-            {Nieuws.map((nieuws) => (
+             {/*filter systeem met opties van categorie*/}
+            <Picker selectedValue={nieuwsCategory} onValueChange={setNieuwsCategory} style={styles.picker}>
+                <Picker.Item label="All" value="" />
+                <Picker.Item label="Nieuws" value="Nieuws" />
+                <Picker.Item label="Activiteit" value="Activiteit" />
+                <Picker.Item label="Aankondiging" value="Aankondiging" />
+            </Picker>
+
+    {/*sorteren van producten*/}
+            <Picker selectedValue={nieuwsSortOption} onValueChange={setNieuwsSortOption} style={styles.picker}>
+                <Picker.Item label="Sort by" value="" />
+                <Picker.Item label="Datum: Nieuwste eerst" value="date-newest" />
+                <Picker.Item label="Datum: Oudste eerst" value="date-oldest" />
+            </Picker>
+
+            <TextInput style={styles.searchInput} placeholder="Zoek nieuws..." value={nieuwsSearchQuery} onChangeText={setNieuwsSearchQuery} />
+
+            {sortedNieuws.map((nieuws) => (
                 <NieuwsCard key={nieuws.id} title={nieuws.name} description={nieuws.description} date={nieuws.date} image={nieuws.image} onPress={() => navigation.navigate('NieuwsDetail', nieuws)} />
             ))}
         </ScrollView>
