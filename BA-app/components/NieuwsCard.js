@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff',
     borderRadius: 32,
-    borderRadius: 16,
   },
   image: {
     width: '100%',

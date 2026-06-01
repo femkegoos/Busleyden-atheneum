@@ -30,12 +30,7 @@ const CampusCard = ({ name, focus, adres, gemeente, kleur, image, onPress }) => 
 };
 
 const styles = StyleSheet.create({
-  focus: {
-    fontSize: 14,
-    fontFamily: 'PoppinsSemiBold',
-    marginTop: 4,
-},
-
+  
   shadowWrapper: {
     borderRadius: 32,
     marginBottom: 32,
