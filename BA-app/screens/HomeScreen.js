@@ -21,7 +21,7 @@ const HomeScreen = ({ navigation }) => {
     const [nieuwsPromotions, setNieuwsPromotions] = useState(false);
     const [nieuwsCategory, setNieuwsCategory] = useState("");
 
-    {/*voorbereiding filter */}
+    {/*voorbereiding filter */ }
     const categoryNames = {
         "": "All",
         "6a16f2413598132e63b5b88f": "Kleding",
@@ -31,14 +31,44 @@ const HomeScreen = ({ navigation }) => {
         "6a16f2e6b4b2caf5acc108e0": "Schrijfgerei",
         "6a16f313d851ef2bd4668e80": "0verige",
     };
+    {/*Kleuren ophalen */ }
+    const campusKleuren = {
+        "6a14a9a659b55fdc303e1bae": "#e63323",
+        "6a14a8b5e90f485594413b81": "#f7a600",
+        "6a14a7adc6a92c1040923648": "#a7358b",
+        "6a14a5821345a3411c062ca1": "#dedc00",
+        "6a14a0ff63dac69c69d52b18": "#ea5297",
+        "6a149fe4513cc18215025734": "#ea5297",
+        "6a149d91863c30159169aa23": "#00afcb",
+        "6a149a4450cc66459d9b51f5": "#1961ac",
+        "6a1498283138b63b27a88a1a": "#ea5297",
+    };
+    {/*Campusnamen ophalen */ }
+    const campusNamen = {
+        "6a14a9a659b55fdc303e1bae": "Zandpoort",
+        "6a14a8b5e90f485594413b81": "Stassart",
+        "6a14a7adc6a92c1040923648": "Nekkerspoel",
+        "6a14a5821345a3411c062ca1": "De Beemden",
+        "6a14a0ff63dac69c69d52b18": "Pitzemburg",
+        "6a149fe4513cc18215025734": "Basisverpleegkunde",
+        "6a149d91863c30159169aa23": "Caputsteen",
+        "6a149a4450cc66459d9b51f5": "Botaniek",
+        "6a1498283138b63b27a88a1a": "Basisverpleegkunde",
+    };
 
-    {/*sorteren van de producten */}
+    const tagMap = {
+        "6a173214fd6b6da7210b76a7": "Terugblik",
+        "6a173200719f7ecaa26c16d8": "Activiteit",
+        "6a1731f01a80eb9ba7f1c7c7": "Nieuws",
+    };
+
+    {/*sorteren van de producten */ }
     const filteredProducts = products.filter((p) =>
         (selectedCategory === "" || p.category === selectedCategory) &&
         p.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    {/*filteren van de producten op categorie, naam en prijs */}
+    {/*filteren van de producten op categorie, naam en prijs */ }
     const sortedProducts = [...filteredProducts].sort((a, b) => {
         if (sortOption === "price-asc") return a.price - b.price;
         if (sortOption === "price-desc") return b.price - a.price;
@@ -48,19 +78,20 @@ const HomeScreen = ({ navigation }) => {
     });
 
     const filteredNieuws = Nieuws.filter((n) =>
-    (nieuwsCategory === "" || n.tag === nieuwsCategory) &&
-    n.name.toLowerCase().includes(nieuwsSearchQuery.toLowerCase())
-  );
+        (nieuwsCategory === "" || n.tag === nieuwsCategory) &&
+        n.name.toLowerCase().includes(nieuwsSearchQuery.toLowerCase())
+    );
 
-  const sortedNieuws = [...filteredNieuws].sort((a, b) => {
-    if (nieuwsSortOption === "date-newest") return new Date(b.date) - new Date(a.date);
-    if (nieuwsSortOption === "date-oldest") return new Date(a.date) - new Date(b.date);
-    return 0;
+    const sortedNieuws = [...filteredNieuws].sort((a, b) => {
+        if (nieuwsSortOption === "date-newest") return new Date(b.date) - new Date(a.date);
+        if (nieuwsSortOption === "date-oldest") return new Date(a.date) - new Date(b.date);
+        return 0;
     });
 
 
-    {/*API ophalen voor content dynamisch in te vullen */}
+    {/*API ophalen voor content dynamisch in te vullen */ }
     useEffect(() => {
+
         Promise.all([
             fetch('https://api.webflow.com/v2/sites/6a11e2085af61b924447aac9/products', {
                 headers: { Authorization: 'Bearer e9758ecc015511838b7e2d0b202273d8a0b45da01e278075056113c076f5284a' },
@@ -75,6 +106,8 @@ const HomeScreen = ({ navigation }) => {
             }).then((response) => response.json()),
         ]).then(([productData, newsData, campusData]) => {
 
+
+
             setProducts(productData.items.map((item) => ({
                 id: item.product.id,
                 title: item.product.fieldData.name,
@@ -82,18 +115,27 @@ const HomeScreen = ({ navigation }) => {
                 image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
             })));
 
-            setNieuws(newsData.items.map((item) => ({
-                id: item.id,
-                name: item.fieldData.name,
-                description: item.fieldData["preview-nieuws"] || "",
-                content: item.fieldData["uitleg-nieuws"] || "",
-                date: item.fieldData.datum ? new Date(item.fieldData.datum).toLocaleDateString() : "",
-                image: { uri: item.fieldData["cover-nieuws-foto"]?.url },
-                sfeerfotos: item.fieldData.sfeerfotos || [],
-                school: item.fieldData.school?.[0] || "",
-                tag: item.fieldData["tag-nieuws"]?.[0] || "",
-            })));
+            setNieuws(newsData.items.map((item) => {
+                // school kan een string-ID of array zijn, dit handelt beide af
+                const schoolId = Array.isArray(item.fieldData.school)
+                    ? item.fieldData.school[0]
+                    : item.fieldData.school;
 
+                return {
+                    id: item.id,
+                    name: item.fieldData.name,
+                    description: item.fieldData["preview-nieuws"] || "",
+                    content: item.fieldData["uitleg-nieuws"] || "",
+                    date: item.fieldData.datum ? new Date(item.fieldData.datum).toLocaleDateString() : "",
+                    image: { uri: item.fieldData["cover-nieuws-foto"]?.url },
+                    sfeerfotos: item.fieldData.sfeerfotos || [],
+                    school: item.fieldData.school || "",
+                    tag: item.fieldData["tag-nieuws"] || "",
+                    kleur: campusKleuren[schoolId] || "#4CAF50",
+                    schoolNaam: campusNamen[schoolId] || "",
+                };
+            }));
+            {/*De ?.[0] pakt het eerste element uit de array */ }
             setCampuses(campusData.items.map((item) => ({
                 id: item.id,
                 name: item.fieldData.name,
@@ -108,9 +150,9 @@ const HomeScreen = ({ navigation }) => {
             .catch((error) => console.error('Error:', error));
     }, []);
     return (
-        
+
         <ScrollView contentContainerStyle={styles.container}>
-             
+
             {/*Campus sectie*/}
             <Text style={styles.titel}>BA campussen</Text>
             {campuses.map((campus) => (
@@ -132,7 +174,7 @@ const HomeScreen = ({ navigation }) => {
                 <Picker.Item label="0verige" value="0verige" />
             </Picker>
 
-    {/*sorteren van producten*/}
+            {/*sorteren van producten*/}
             <Picker selectedValue={sortOption} onValueChange={setSortOption} style={styles.picker}>
                 <Picker.Item label="Sort by" value="" />
                 <Picker.Item label="Price: Low to High" value="price-asc" />
@@ -141,13 +183,13 @@ const HomeScreen = ({ navigation }) => {
                 <Picker.Item label="Name: Z to A" value="name-desc" />
             </Picker>
 
-    {/*search balk*/}
+            {/*search balk*/}
             <TextInput style={styles.searchInput} placeholder="Search products..." value={searchQuery} onChangeText={setSearchQuery} />
 
             <View style={styles.switchContainer}>
                 <Text>Enkel promoties</Text>
                 <Switch value={promotions} onValueChange={(value) => setPromotions(value)} trackColor={{ false: 'rgba(122, 90, 69, 0.1)', true: '#4CAF50' }} thumbColor={promotions ? '#fff' : '#fff'} />
-       </View>
+            </View>
 
 
             {sortedProducts.map((product) => (
@@ -158,7 +200,7 @@ const HomeScreen = ({ navigation }) => {
             {/*Nieuws sectie*/}
             <Text style={styles.titel}>Nieuws</Text>
 
-             {/*filter systeem met opties van categorie*/}
+            {/*filter systeem met opties van categorie*/}
             <Picker selectedValue={nieuwsCategory} onValueChange={setNieuwsCategory} style={styles.picker}>
                 <Picker.Item label="All" value="" />
                 <Picker.Item label="Nieuws" value="Nieuws" />
@@ -166,7 +208,7 @@ const HomeScreen = ({ navigation }) => {
                 <Picker.Item label="Aankondiging" value="Aankondiging" />
             </Picker>
 
-    {/*sorteren van producten*/}
+            {/*sorteren van producten*/}
             <Picker selectedValue={nieuwsSortOption} onValueChange={setNieuwsSortOption} style={styles.picker}>
                 <Picker.Item label="Sort by" value="" />
                 <Picker.Item label="Datum: Nieuwste eerst" value="date-newest" />
@@ -177,7 +219,17 @@ const HomeScreen = ({ navigation }) => {
             <TextInput style={styles.searchInput} placeholder="Zoek nieuws..." value={nieuwsSearchQuery} onChangeText={setNieuwsSearchQuery} />
 
             {sortedNieuws.map((nieuws) => (
-                <NieuwsCard key={nieuws.id} title={nieuws.name} description={nieuws.description} date={nieuws.date} image={nieuws.image} onPress={() => navigation.navigate('NieuwsDetail', nieuws)} />
+                <NieuwsCard
+                    key={nieuws.id}
+                    title={nieuws.name}
+                    description={nieuws.description}
+                    date={nieuws.date}
+                    image={nieuws.image}
+                    schoolnaam={nieuws.schoolNaam}
+                    tag={tagMap[nieuws.tag] || nieuws.tag}
+                    kleur={nieuws.kleur}
+                    onPress={() => navigation.navigate('NieuwsDetail', nieuws)}
+                />
             ))}
         </ScrollView>
     );
@@ -210,17 +262,17 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-    justifyContent: 'space-between',
-    width: '90%',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
-},
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 24,
+        justifyContent: 'space-between',
+        width: '90%',
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: 10,
+        backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    },
 });
 
 export default HomeScreen;
