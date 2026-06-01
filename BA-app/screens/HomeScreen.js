@@ -21,6 +21,13 @@ const HomeScreen = ({ navigation }) => {
     const [nieuwsPromotions, setNieuwsPromotions] = useState(false);
     const [nieuwsCategory, setNieuwsCategory] = useState("");
 
+    const scrollViewRef = useRef(null);
+const webshopRef = useRef(null);
+const nieuwsRef = useRef(null);
+
+const [webshopY, setWebshopY] = useState(0);
+const [nieuwsY, setNieuwsY] = useState(0);
+
     {/*voorbereiding filter */ }
     const categoryNames = {
         "": "All",
@@ -130,6 +137,8 @@ const HomeScreen = ({ navigation }) => {
     };
 }));
 
+
+
             setNieuws(newsData.items.map((item) => {
                 const rawTag = item.fieldData["tag-nieuws"] || "";
 
@@ -176,9 +185,23 @@ const HomeScreen = ({ navigation }) => {
         })
             .catch((error) => console.error('Error:', error));
     }, []);
+
+useEffect(() => {
+    const unsubscribe = navigation.addListener('tabPress', (e) => {
+        const tabName = e.target.split('-')[0];
+        if (tabName === 'Webshop') {
+            scrollViewRef.current?.scrollTo({ y: webshopY, animated: true });
+        }
+        if (tabName === 'Nieuwsjes') {
+            scrollViewRef.current?.scrollTo({ y: nieuwsY, animated: true });
+        }
+    });
+    return unsubscribe;
+}, [navigation, webshopY, nieuwsY]);
+
     return (
 
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView ref={scrollViewRef} contentContainerStyle={styles.container}>
 
             {/*Campus sectie*/}
             <Text style={styles.titel}>BA campussen</Text>
@@ -190,7 +213,12 @@ const HomeScreen = ({ navigation }) => {
             {/*Webshop sectie*/}
 
             {/*filter systeem met opties van categorie*/}
-            <Text style={styles.titel}>Webshop</Text>
+           <View ref={webshopRef} style={{ width: '100%', alignItems: 'center' }} onLayout={() => {
+    webshopRef.current?.measureInWindow((x, y, width, height) => {
+        setWebshopY(y);
+    });
+}}>
+    <Text style={styles.titel}>Webshop</Text>
             <Picker selectedValue={selectedCategory} onValueChange={setSelectedCategory} style={styles.picker}>
                 <Picker.Item label="All" value="" />
                 <Picker.Item label="Kleding" value="Kleding" />
@@ -222,10 +250,16 @@ const HomeScreen = ({ navigation }) => {
             {sortedProducts.map((product) => (
                 <ProductCard key={product.id} title={product.title} description={product.description} price={product.price} image={product.image} onPress={() => navigation.navigate('ShopDetail', product)} />
             ))}
+            </View>
 
 
             {/*Nieuws sectie*/}
-            <Text style={styles.titel}>Nieuws</Text>
+          <View ref={nieuwsRef} style={{ width: '100%', alignItems: 'center' }} onLayout={() => {
+    nieuwsRef.current?.measureInWindow((x, y, width, height) => {
+        setNieuwsY(y);
+    });
+}}>
+    <Text style={styles.titel}>Nieuws</Text>
 
             {/*filter systeem met opties van categorie*/}
             <Picker selectedValue={nieuwsCategory} onValueChange={setNieuwsCategory} style={styles.picker}>
@@ -258,6 +292,7 @@ const HomeScreen = ({ navigation }) => {
                     onPress={() => navigation.navigate('NieuwsDetail', nieuws)}
                 />
             ))}
+    </View>
         </ScrollView>
     );
 }

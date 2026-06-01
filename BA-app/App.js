@@ -18,7 +18,7 @@ const screenOptions = {
     },
     headerTintColor: '#000000',
     headerTitleStyle: {
-      fontFamily: 'Poppins',
+      fontFamily: 'PoppinsBold',
       fontSize: 24,
       tabBarShowLabel: false,
     },
