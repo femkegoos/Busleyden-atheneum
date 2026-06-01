@@ -109,26 +109,26 @@ const HomeScreen = ({ navigation }) => {
 
 
 
-            setProducts(productData.items.map((item) => {
-                const rawCategory = item.product.fieldData.category?.[0] || "";
+          setProducts(productData.items.map((item) => {
+    const rawCategory = item.product.fieldData.category?.[0] || "";
 
-                let vertaaldeCategory;
-                if (categoryNames[rawCategory]) {
-                    vertaaldeCategory = categoryNames[rawCategory];
-                } else {
-                    vertaaldeCategory = rawCategory;
-                }
+    let vertaaldeCategory;
+    if (categoryNames[rawCategory]) {
+        vertaaldeCategory = categoryNames[rawCategory];
+    } else {
+        vertaaldeCategory = rawCategory;
+    }
 
-                return {
-                    id: item.product.id,
-                    title: item.product.fieldData.name,
-                    description: item.product.fieldData.description || "",
-                    price: (item.skus[0]?.fieldData.price.value || 0) / 100,
-                    image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
-                    category: vertaaldeCategory,
-                    isPromo: item.product.fieldData.promotie || false,
-                };
-            }));
+    return {
+        id: item.product.id,
+        title: item.product.fieldData.name,
+        description: item.product.fieldData.description || "",
+        price: (item.skus[0]?.fieldData.price.value || 0) / 100,
+        image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
+        category: vertaaldeCategory,
+        isPromo: item.product.fieldData.promotion || false,
+    };
+}));
 
             setNieuws(newsData.items.map((item) => {
                 const rawTag = item.fieldData["tag-nieuws"] || "";
@@ -152,7 +152,7 @@ const HomeScreen = ({ navigation }) => {
                     name: item.fieldData.name,
                     description: item.fieldData["preview-nieuws"] || "",
                     content: item.fieldData["uitleg-nieuws"] || "",
-                    date: item.fieldData.datum ? new Date(item.fieldData.datum).toLocaleDateString() : "",
+                    date: item.fieldData.datum ? new Date(item.fieldData.datum).toLocaleDateString('nl-BE') : "",
                     rawDate: item.fieldData.datum || "",
                     image: { uri: item.fieldData["cover-nieuws-foto"]?.url },
                     sfeerfotos: item.fieldData.sfeerfotos || [],
@@ -220,7 +220,7 @@ const HomeScreen = ({ navigation }) => {
 
 
             {sortedProducts.map((product) => (
-                <ProductCard key={product.id} title={product.title} description={product.description} price={product.price} image={product.image} onPress={() => navigation.navigate('ProductDetail', product)} />
+                <ProductCard key={product.id} title={product.title} description={product.description} price={product.price} image={product.image} onPress={() => navigation.navigate('ShopDetail', product)} />
             ))}
 
 
