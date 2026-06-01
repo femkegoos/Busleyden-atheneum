@@ -14,11 +14,11 @@ const Tab = createBottomTabNavigator();
 
 const screenOptions = {
   headerStyle: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f7fcee',
     },
     headerTintColor: '#000000',
     headerTitleStyle: {
-      fontFamily: 'PoppinsBold',
+      fontFamily: 'PoppinsSemiBold',
       fontSize: 24,
       tabBarShowLabel: false,
     },

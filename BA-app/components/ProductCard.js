@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 
-const ProductCard = ({ title, description, price, image, onPress }) => {
+const ProductCard = ({ title, description, price, image, onPress, isPromo }) => {
   return (
     <Shadow
       distance={20}
@@ -14,6 +14,8 @@ const ProductCard = ({ title, description, price, image, onPress }) => {
 
         {/* Product foto */}
         <Image source={image} style={styles.image} />
+
+        {isPromo && <Text style={styles.promo}>PROMOTION</Text>}
 
         {/* Naam product */}
         <Text style={styles.title}>{title}</Text>
@@ -63,6 +65,12 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     marginTop: 12,
   },
+  promo: {
+    fontSize: 11,
+    fontFamily: 'PoppinsBold',
+    color: '#ff6b6b',
+    marginTop: 8,
+},
 });
 
 export default ProductCard;

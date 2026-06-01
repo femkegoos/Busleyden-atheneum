@@ -248,7 +248,7 @@ useEffect(() => {
 
 
             {sortedProducts.map((product) => (
-                <ProductCard key={product.id} title={product.title} description={product.description} price={product.price} image={product.image} onPress={() => navigation.navigate('ShopDetail', product)} />
+                <ProductCard key={product.id} title={product.title} description={product.description} price={product.price} isPromo={product.isPromo} image={product.image} onPress={() => navigation.navigate('ShopDetail', product)} />
             ))}
             </View>
 
