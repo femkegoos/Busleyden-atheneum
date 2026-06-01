@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 
-const ProductCard = ({ title, price, image, onPress }) => {
+const ProductCard = ({ title, description, price, image, onPress }) => {
   return (
     <Shadow
       distance={20}
-      startColor="#00000020"
+      startColor="#4CAF5020"
       offset={[4, 0]}
       style={styles.shadowWrapper}
     >
@@ -15,16 +15,14 @@ const ProductCard = ({ title, price, image, onPress }) => {
         {/* Product foto */}
         <Image source={image} style={styles.image} />
 
-        {/* Titel */}
+        {/* Naam product */}
         <Text style={styles.title}>{title}</Text>
 
-        {/* Prijs en knop op zelfde rij */}
-        <View style={styles.bottomRij}>
-          <Text style={styles.price}>€{price.toFixed(2)}</Text>
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Bekijk</Text>
-          </View>
-        </View>
+        {/* Uitleg product */}
+        <Text style={styles.description}>{description}</Text>
+
+        {/* Prijs */}
+        <Text style={styles.price}>€{price.toFixed(2)}</Text>
 
       </TouchableOpacity>
     </Shadow>
@@ -33,14 +31,14 @@ const ProductCard = ({ title, price, image, onPress }) => {
 
 const styles = StyleSheet.create({
   shadowWrapper: {
-    borderRadius: 16,
-    marginBottom: 16,
+    borderRadius: 32,
+    marginBottom: 32,
   },
   card: {
     width: 350,
     padding: 16,
     backgroundColor: '#fff',
-    borderRadius: 16,
+    borderRadius: 32,
   },
   image: {
     width: '100%',
@@ -52,27 +50,18 @@ const styles = StyleSheet.create({
     fontFamily: 'PoppinsBold',
     marginTop: 12,
   },
-  bottomRij: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 12,
+  description: {
+    fontSize: 12,
+    fontFamily: 'PoppinsRegular',
+    color: '#555',
+    marginTop: 8,
+    lineHeight: 20,
   },
   price: {
     fontSize: 18,
     fontFamily: 'PoppinsSemiBold',
     color: '#4CAF50',
-  },
-  button: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: '#fff',
-    fontFamily: 'PoppinsSemiBold',
-    fontSize: 14,
+    marginTop: 12,
   },
 });
 

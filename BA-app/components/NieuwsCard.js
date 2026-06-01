@@ -48,13 +48,14 @@ const NieuwsCard = ({ title, description, date, image, tag, schoolnaam, kleur, o
 
 const styles = StyleSheet.create({
   shadowWrapper: {
-    borderRadius: 16,
-    marginBottom: 16,
+    borderRadius: 32,
+    marginBottom: 32,
   },
   card: {
     width: 350,
     padding: 16,
     backgroundColor: '#fff',
+    borderRadius: 32,
     borderRadius: 16,
   },
   image: {

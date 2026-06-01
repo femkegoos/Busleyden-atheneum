@@ -205,7 +205,7 @@ const HomeScreen = ({ navigation }) => {
 
 
             {sortedProducts.map((product) => (
-                <ProductCard key={product.id} title={product.title} price={product.price} image={product.image} onPress={() => navigation.navigate('ProductDetail', product)} />
+                <ProductCard key={product.id} title={product.title} description={product.description} price={product.price} image={product.image} onPress={() => navigation.navigate('ProductDetail', product)} />
             ))}
 
 
