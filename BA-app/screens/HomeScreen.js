@@ -90,8 +90,8 @@ const HomeScreen = ({ navigation }) => {
                 date: item.fieldData.datum ? new Date(item.fieldData.datum).toLocaleDateString() : "",
                 image: { uri: item.fieldData["cover-nieuws-foto"]?.url },
                 sfeerfotos: item.fieldData.sfeerfotos || [],
-                school: item.fieldData.school || "",
-                tag: item.fieldData["tag-nieuws"] || "",
+                school: item.fieldData.school?.[0] || "",
+                tag: item.fieldData["tag-nieuws"]?.[0] || "",
             })));
 
             setCampuses(campusData.items.map((item) => ({
