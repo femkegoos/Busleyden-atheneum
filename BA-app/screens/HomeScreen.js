@@ -82,11 +82,11 @@ const HomeScreen = ({ navigation }) => {
         n.name.toLowerCase().includes(nieuwsSearchQuery.toLowerCase())
     );
 
-   const sortedNieuws = [...filteredNieuws].sort((a, b) => {
-    if (nieuwsSortOption === "date-newest") return new Date(b.rawDate) - new Date(a.rawDate);
-    if (nieuwsSortOption === "date-oldest") return new Date(a.rawDate) - new Date(b.rawDate);
-    return 0;
-});
+    const sortedNieuws = [...filteredNieuws].sort((a, b) => {
+        if (nieuwsSortOption === "date-newest") return new Date(b.rawDate) - new Date(a.rawDate);
+        if (nieuwsSortOption === "date-oldest") return new Date(a.rawDate) - new Date(b.rawDate);
+        return 0;
+    });
 
 
     {/*API ophalen voor content dynamisch in te vullen */ }
@@ -108,13 +108,26 @@ const HomeScreen = ({ navigation }) => {
 
 
 
-            setProducts(productData.items.map((item) => ({
-                id: item.product.id,
-                title: item.product.fieldData.name,
-                description: item.product.fieldData.description || "",
-                price: (item.skus[0]?.fieldData.price.value || 0) / 100,
-                image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
-            })));
+            setProducts(productData.items.map((item) => {
+    const rawCategory = item.product.fieldData.category?.[0] || "";
+
+    let vertaaldeCategory;
+    if (categoryNames[rawCategory]) {
+        vertaaldeCategory = categoryNames[rawCategory];
+    } else {
+        vertaaldeCategory = rawCategory;
+    }
+
+    return {
+        id: item.product.id,
+        title: item.product.fieldData.name,
+        description: item.product.fieldData.description || "",
+        price: (item.skus[0]?.fieldData.price.value || 0) / 100,
+        image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
+        category: vertaaldeCategory,
+        isPromo: item.product.fieldData.promotie || false,
+    };
+}));
 
             setNieuws(newsData.items.map((item) => {
                 const rawTag = item.fieldData["tag-nieuws"] || "";
@@ -139,7 +152,7 @@ const HomeScreen = ({ navigation }) => {
                     description: item.fieldData["preview-nieuws"] || "",
                     content: item.fieldData["uitleg-nieuws"] || "",
                     date: item.fieldData.datum ? new Date(item.fieldData.datum).toLocaleDateString() : "",
-                    rawDate: item.fieldData.datum || "", 
+                    rawDate: item.fieldData.datum || "",
                     image: { uri: item.fieldData["cover-nieuws-foto"]?.url },
                     sfeerfotos: item.fieldData.sfeerfotos || [],
                     school: item.fieldData.school || "",
