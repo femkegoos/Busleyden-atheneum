@@ -82,11 +82,11 @@ const HomeScreen = ({ navigation }) => {
         n.name.toLowerCase().includes(nieuwsSearchQuery.toLowerCase())
     );
 
-    const sortedNieuws = [...filteredNieuws].sort((a, b) => {
-        if (nieuwsSortOption === "date-newest") return new Date(b.date) - new Date(a.date);
-        if (nieuwsSortOption === "date-oldest") return new Date(a.date) - new Date(b.date);
-        return 0;
-    });
+   const sortedNieuws = [...filteredNieuws].sort((a, b) => {
+    if (nieuwsSortOption === "date-newest") return new Date(b.rawDate) - new Date(a.rawDate);
+    if (nieuwsSortOption === "date-oldest") return new Date(a.rawDate) - new Date(b.rawDate);
+    return 0;
+});
 
 
     {/*API ophalen voor content dynamisch in te vullen */ }
@@ -139,6 +139,7 @@ const HomeScreen = ({ navigation }) => {
                     description: item.fieldData["preview-nieuws"] || "",
                     content: item.fieldData["uitleg-nieuws"] || "",
                     date: item.fieldData.datum ? new Date(item.fieldData.datum).toLocaleDateString() : "",
+                    rawDate: item.fieldData.datum || "", 
                     image: { uri: item.fieldData["cover-nieuws-foto"]?.url },
                     sfeerfotos: item.fieldData.sfeerfotos || [],
                     school: item.fieldData.school || "",
