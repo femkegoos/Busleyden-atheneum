@@ -12,18 +12,20 @@ import { useFonts } from 'expo-font';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+{/* Styling van de header op detail schermen */ }
 const screenOptions = {
   headerStyle: {
     backgroundColor: '#f7fcee',
-    },
-    headerTintColor: '#000000',
-    headerTitleStyle: {
-      fontFamily: 'PoppinsSemiBold',
-      fontSize: 24,
-      tabBarShowLabel: false,
-    },
-  };
+  },
+  headerTintColor: '#000000',
+  headerTitleStyle: {
+    fontFamily: 'PoppinsSemiBold',
+    fontSize: 24,
+    tabBarShowLabel: false,
+  },
+};
 
+{/* Overzicht van de detail schermen voor hte navigeren */ }
 function HomeStack() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
@@ -36,6 +38,7 @@ function HomeStack() {
 }
 
 export default function App() {
+  {/*invoegen van custom fonts */ }
   const [fontsLoaded] = useFonts({
     'PoppinsRegular': require('./assets/fonts/Poppins-Regular.ttf'),
     'PoppinsBold': require('./assets/fonts/Poppins-Bold.ttf'),
@@ -43,36 +46,38 @@ export default function App() {
     'PoppinsItalic': require('./assets/fonts/Poppins-Italic.ttf'),
 
   });
-    if (!fontsLoaded) {
+  if (!fontsLoaded) {
     return null;
-    }
-    return (
+  }
+  return (
     <NavigationContainer>
+      {/* Tab Navigator onderaan het scherm */}
       <Tab.Navigator
         screenOptions={{
-            headerShown: false,
-            tabBarActiveTintColor: '#4CAF50',
-            tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.4)',
-            tabBarStyle: {
-              backgroundColor: '#f7fcee',
-              borderTopColor: '#f7fcee',
-                padding: 16,
-                height: 100,
-                 paddingTop: 16,
-            },
-            tabBarLabelStyle: {
-                fontFamily: 'PoppinsRegular',
-                fontSize: 18,
-                paddingLeft: 16,
-                paddingRight: 16,
-               
-            },
+          headerShown: false,
+          tabBarActiveTintColor: '#4CAF50',
+          tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.4)',
+          tabBarStyle: {
+            backgroundColor: '#f7fcee',
+            borderTopColor: '#f7fcee',
+            padding: 16,
+            height: 100,
+            paddingTop: 16,
+          },
+          tabBarLabelStyle: {
+            fontFamily: 'PoppinsRegular',
+            fontSize: 18,
+            paddingLeft: 16,
+            paddingRight: 16,
+
+          },
         }}
-        >
-        <Tab.Screen name="Scholen" component={HomeStack} options={{tabBarIcon: ({ color, size }) => (<Ionicons name="school" color={color} size={size} />  ),}} />
-        <Tab.Screen name="Webshop" component={HomeStack} options={{tabBarIcon: ({ color, size }) => (<Ionicons name="cart" color={color} size={size} />  ),}} />
-            <Tab.Screen name="Nieuwsjes" component={HomeStack} options={{tabBarIcon: ({ color, size }) => (<Ionicons name="document" color={color} size={size} />  ),}} />   
-        </Tab.Navigator>
+      >
+        {/* Elk tablad gebruikt HomeStack voor navigatie met elks hun icoon */}
+        <Tab.Screen name="Scholen" component={HomeStack} options={{ tabBarIcon: ({ color, size }) => (<Ionicons name="school" color={color} size={size} />), }} />
+        <Tab.Screen name="Webshop" component={HomeStack} options={{ tabBarIcon: ({ color, size }) => (<Ionicons name="cart" color={color} size={size} />), }} />
+        <Tab.Screen name="Nieuwsjes" component={HomeStack} options={{ tabBarIcon: ({ color, size }) => (<Ionicons name="document" color={color} size={size} />), }} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }

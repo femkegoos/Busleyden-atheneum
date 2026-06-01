@@ -4,12 +4,12 @@ import { Shadow } from 'react-native-shadow-2';
 
 const NieuwsCard = ({ title, description, date, image, tag, schoolnaam, kleur, onPress }) => {
 
-  // Helper voor shadow kleur
+  {/* Maakt een transparante versie van de campuskleur voor de schaduw */}
  const getShadowColor = (kleur) => {
   if (!kleur || typeof kleur !== 'string') return '#00000020'; // fallback
-  // Controleer of kleur begint met #
+  {/*Controleer of kleur begint met # */}
   const isHex = kleur.startsWith('#');
-  // Voeg transparantie toe aan de hex-code
+  {/*Voeg transparantie toe aan de hex-code */}
   return isHex ? `${kleur}20` : `#${kleur}20`;
 };
 

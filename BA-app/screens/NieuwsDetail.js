@@ -30,7 +30,9 @@ const NieuwsDetail = ({ route }) => {
         {sfeerfotos && sfeerfotos.length > 0 && (
           <>
             <Text style={[styles.sfeerTitel, { color: kleur }]}>Foto's</Text>
+            {/* Grid van sfeerfotos */}
             <View style={styles.sfeerGrid}>
+              
               {sfeerfotos.map((foto, index) => (
                 <Image
                   key={index}

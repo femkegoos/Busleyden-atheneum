@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, Button } from 'react-native';
 
 const ShopDetail = ({ route }) => {
+    {/* Haal productdata op uit de navigatieparameters */}
     const { title, description, price, image } = route.params;
+    {/* Bijhouden van het gekozen aantal producten*/}
     const [quantity, setQuantity] = useState(1);
 
     const increaseQuantity = () => setQuantity(quantity + 1);

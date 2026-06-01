@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 
 const CampusDetail = ({ route }) => {
+   {/* Haal campusdata op uit de navigatieparameters */}
   const { name, focus, beschrijving, adres, gemeente, kleur, image } = route.params;
 
   return (

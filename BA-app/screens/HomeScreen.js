@@ -6,27 +6,32 @@ import CampusCard from '../components/CampusCard';
 import ProductCard from '../components/ProductCard';
 
 const HomeScreen = ({ navigation }) => {
+    {/* State voor de verschillende data arrays opgehaald van API */ }
     const [Nieuws, setNieuws] = useState([]);
     const [campuses, setCampuses] = useState([]);
     const [products, setProducts] = useState([]);
 
+    {/* Filter states voor webshop */ }
     const [selectedCategory, setSelectedCategory] = useState("");
 
+    {/* sort states voor webshop */ }
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOption, setSortOption] = useState("");
     const [promotions, setPromotions] = useState(false);
 
+    {/* Filter states voor nieuws */ }
     const [nieuwsSearchQuery, setNieuwsSearchQuery] = useState("");
     const [nieuwsSortOption, setNieuwsSortOption] = useState("");
     const [nieuwsPromotions, setNieuwsPromotions] = useState(false);
     const [nieuwsCategory, setNieuwsCategory] = useState("");
 
+    {/* Refs en states voor scrollen naar secties bij tab navigatie */ }
     const scrollViewRef = useRef(null);
-const webshopRef = useRef(null);
-const nieuwsRef = useRef(null);
+    const webshopRef = useRef(null);
+    const nieuwsRef = useRef(null);
 
-const [webshopY, setWebshopY] = useState(0);
-const [nieuwsY, setNieuwsY] = useState(0);
+    const [webshopY, setWebshopY] = useState(0);
+    const [nieuwsY, setNieuwsY] = useState(0);
 
     {/*voorbereiding filter */ }
     const categoryNames = {
@@ -63,6 +68,7 @@ const [nieuwsY, setNieuwsY] = useState(0);
         "6a1498283138b63b27a88a1a": "Basisverpleegkunde",
     };
 
+    {/* Vertaaltabel: tag-ID naar leesbare tagnaam */ }
     const tagMap = {
         "6a173214fd6b6da7210b76a7": "Terugblik",
         "6a173200719f7ecaa26c16d8": "Activiteit",
@@ -70,11 +76,11 @@ const [nieuwsY, setNieuwsY] = useState(0);
     };
 
     {/*sorteren van de producten */ }
-   const filteredProducts = products.filter((p) =>
-    (selectedCategory === "" || p.category === selectedCategory) &&
-    p.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-    (!promotions || p.isPromo === true)  
-);
+    const filteredProducts = products.filter((p) =>
+        (selectedCategory === "" || p.category === selectedCategory) &&
+        p.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (!promotions || p.isPromo === true)
+    );
 
     {/*filteren van de producten op categorie, naam en prijs */ }
     const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -85,11 +91,13 @@ const [nieuwsY, setNieuwsY] = useState(0);
         return 0;
     });
 
+    {/* Filter nieuws op categorie en zoekterm */ }
     const filteredNieuws = Nieuws.filter((n) =>
         (nieuwsCategory === "" || n.tag === nieuwsCategory) &&
         n.name.toLowerCase().includes(nieuwsSearchQuery.toLowerCase())
     );
 
+    {/* Sorteer gefilterd nieuws op datum */ }
     const sortedNieuws = [...filteredNieuws].sort((a, b) => {
         if (nieuwsSortOption === "date-newest") return new Date(b.rawDate) - new Date(a.rawDate);
         if (nieuwsSortOption === "date-oldest") return new Date(a.rawDate) - new Date(b.rawDate);
@@ -115,30 +123,30 @@ const [nieuwsY, setNieuwsY] = useState(0);
         ]).then(([productData, newsData, campusData]) => {
 
 
+            {/* Zet productdata om naar bruikbaar info */ }
+            setProducts(productData.items.map((item) => {
+                const rawCategory = item.product.fieldData.category?.[0] || "";
 
-          setProducts(productData.items.map((item) => {
-    const rawCategory = item.product.fieldData.category?.[0] || "";
+                let vertaaldeCategory;
+                if (categoryNames[rawCategory]) {
+                    vertaaldeCategory = categoryNames[rawCategory];
+                } else {
+                    vertaaldeCategory = rawCategory;
+                }
 
-    let vertaaldeCategory;
-    if (categoryNames[rawCategory]) {
-        vertaaldeCategory = categoryNames[rawCategory];
-    } else {
-        vertaaldeCategory = rawCategory;
-    }
-
-    return {
-        id: item.product.id,
-        title: item.product.fieldData.name,
-        description: item.product.fieldData.description || "",
-        price: (item.skus[0]?.fieldData.price.value || 0) / 100,
-        image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
-        category: vertaaldeCategory,
-        isPromo: item.product.fieldData.promotion || false,
-    };
-}));
+                return {
+                    id: item.product.id,
+                    title: item.product.fieldData.name,
+                    description: item.product.fieldData.description || "",
+                    price: (item.skus[0]?.fieldData.price.value || 0) / 100,
+                    image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
+                    category: vertaaldeCategory,
+                    isPromo: item.product.fieldData.promotion || false,
+                };
+            }));
 
 
-
+            {/* Zet nieuwsdata om, vertaal tag en koppel campuskleur en naam */ }
             setNieuws(newsData.items.map((item) => {
                 const rawTag = item.fieldData["tag-nieuws"] || "";
 
@@ -171,7 +179,9 @@ const [nieuwsY, setNieuwsY] = useState(0);
                     schoolNaam: campusNamen[schoolId] || "",
                 };
             }));
+
             {/*De ?.[0] pakt het eerste element uit de array */ }
+            {/* Zet campusdata om, pakt eerste galerij-afbeelding */ }
             setCampuses(campusData.items.map((item) => ({
                 id: item.id,
                 name: item.fieldData.name,
@@ -186,18 +196,19 @@ const [nieuwsY, setNieuwsY] = useState(0);
             .catch((error) => console.error('Error:', error));
     }, []);
 
-useEffect(() => {
-    const unsubscribe = navigation.addListener('tabPress', (e) => {
-        const tabName = e.target.split('-')[0];
-        if (tabName === 'Webshop') {
-            scrollViewRef.current?.scrollTo({ y: webshopY, animated: true });
-        }
-        if (tabName === 'Nieuwsjes') {
-            scrollViewRef.current?.scrollTo({ y: nieuwsY, animated: true });
-        }
-    });
-    return unsubscribe;
-}, [navigation, webshopY, nieuwsY]);
+    {/* Linken van de klik op de bottomtabs naar de delen op de HomeScreen */ }
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('tabPress', (e) => {
+            const tabName = e.target.split('-')[0];
+            if (tabName === 'Webshop') {
+                scrollViewRef.current?.scrollTo({ y: webshopY, animated: true });
+            }
+            if (tabName === 'Nieuwsjes') {
+                scrollViewRef.current?.scrollTo({ y: nieuwsY, animated: true });
+            }
+        });
+        return unsubscribe;
+    }, [navigation, webshopY, nieuwsY]);
 
     return (
 
@@ -213,86 +224,86 @@ useEffect(() => {
             {/*Webshop sectie*/}
 
             {/*filter systeem met opties van categorie*/}
-           <View ref={webshopRef} style={{ width: '100%', alignItems: 'center' }} onLayout={() => {
-    webshopRef.current?.measureInWindow((x, y, width, height) => {
-        setWebshopY(y);
-    });
-}}>
-    <Text style={styles.titel}>Webshop</Text>
-            <Picker selectedValue={selectedCategory} onValueChange={setSelectedCategory} style={styles.picker}>
-                <Picker.Item label="All" value="" />
-                <Picker.Item label="Kleding" value="Kleding" />
-                <Picker.Item label="Baby & kids" value="Baby & kids" />
-                <Picker.Item label="Accessoires" value="Accessoires" />
-                <Picker.Item label="Food & drinks" value="Food & drinks" />
-                <Picker.Item label="Schrijfgerei" value="Schrijfgerei" />
-                <Picker.Item label="0verige" value="0verige" />
-            </Picker>
+            <View ref={webshopRef} style={{ width: '100%', alignItems: 'center' }} onLayout={() => {
+                webshopRef.current?.measureInWindow((x, y, width, height) => {
+                    setWebshopY(y);
+                });
+            }}>
+                <Text style={styles.titel}>Webshop</Text>
+                <Picker selectedValue={selectedCategory} onValueChange={setSelectedCategory} style={styles.picker}>
+                    <Picker.Item label="All" value="" />
+                    <Picker.Item label="Kleding" value="Kleding" />
+                    <Picker.Item label="Baby & kids" value="Baby & kids" />
+                    <Picker.Item label="Accessoires" value="Accessoires" />
+                    <Picker.Item label="Food & drinks" value="Food & drinks" />
+                    <Picker.Item label="Schrijfgerei" value="Schrijfgerei" />
+                    <Picker.Item label="0verige" value="0verige" />
+                </Picker>
 
-            {/*sorteren van producten*/}
-            <Picker selectedValue={sortOption} onValueChange={setSortOption} style={styles.picker}>
-                <Picker.Item label="Sort by" value="" />
-                <Picker.Item label="Price: Low to High" value="price-asc" />
-                <Picker.Item label="Price: High to Low" value="price-desc" />
-                <Picker.Item label="Name: A to Z" value="name-asc" />
-                <Picker.Item label="Name: Z to A" value="name-desc" />
-            </Picker>
+                {/*sorteren van producten*/}
+                <Picker selectedValue={sortOption} onValueChange={setSortOption} style={styles.picker}>
+                    <Picker.Item label="Sort by" value="" />
+                    <Picker.Item label="Price: Low to High" value="price-asc" />
+                    <Picker.Item label="Price: High to Low" value="price-desc" />
+                    <Picker.Item label="Name: A to Z" value="name-asc" />
+                    <Picker.Item label="Name: Z to A" value="name-desc" />
+                </Picker>
 
-            {/*search balk*/}
-            <TextInput style={styles.searchInput} placeholder="Search products..." value={searchQuery} onChangeText={setSearchQuery} />
+                {/*search balk*/}
+                <TextInput style={styles.searchInput} placeholder="Search products..." value={searchQuery} onChangeText={setSearchQuery} />
 
-            <View style={styles.switchContainer}>
-                <Text>Enkel promoties</Text>
-                <Switch value={promotions} onValueChange={(value) => setPromotions(value)} trackColor={{ false: 'rgba(122, 90, 69, 0.1)', true: '#4CAF50' }} thumbColor={promotions ? '#fff' : '#fff'} />
-            </View>
+                <View style={styles.switchContainer}>
+                    <Text>Enkel promoties</Text>
+                    <Switch value={promotions} onValueChange={(value) => setPromotions(value)} trackColor={{ false: 'rgba(122, 90, 69, 0.1)', true: '#4CAF50' }} thumbColor={promotions ? '#fff' : '#fff'} />
+                </View>
 
 
-            {sortedProducts.map((product) => (
-                <ProductCard key={product.id} title={product.title} description={product.description} price={product.price} isPromo={product.isPromo} image={product.image} onPress={() => navigation.navigate('ShopDetail', product)} />
-            ))}
+                {sortedProducts.map((product) => (
+                    <ProductCard key={product.id} title={product.title} description={product.description} price={product.price} isPromo={product.isPromo} image={product.image} onPress={() => navigation.navigate('ShopDetail', product)} />
+                ))}
             </View>
 
 
             {/*Nieuws sectie*/}
-          <View ref={nieuwsRef} style={{ width: '100%', alignItems: 'center' }} onLayout={() => {
-    nieuwsRef.current?.measureInWindow((x, y, width, height) => {
-        setNieuwsY(y);
-    });
-}}>
-    <Text style={styles.titel}>Nieuws</Text>
+            <View ref={nieuwsRef} style={{ width: '100%', alignItems: 'center' }} onLayout={() => {
+                nieuwsRef.current?.measureInWindow((x, y, width, height) => {
+                    setNieuwsY(y);
+                });
+            }}>
+                <Text style={styles.titel}>Nieuws</Text>
 
-            {/*filter systeem met opties van categorie*/}
-            <Picker selectedValue={nieuwsCategory} onValueChange={setNieuwsCategory} style={styles.picker}>
-                <Picker.Item label="All" value="" />
-                <Picker.Item label="Nieuws" value="Nieuws" />
-                <Picker.Item label="Activiteit" value="Activiteit" />
-                <Picker.Item label="Aankondiging" value="Aankondiging" />
-            </Picker>
+                {/*filter systeem met opties van categorie*/}
+                <Picker selectedValue={nieuwsCategory} onValueChange={setNieuwsCategory} style={styles.picker}>
+                    <Picker.Item label="All" value="" />
+                    <Picker.Item label="Nieuws" value="Nieuws" />
+                    <Picker.Item label="Activiteit" value="Activiteit" />
+                    <Picker.Item label="Aankondiging" value="Aankondiging" />
+                </Picker>
 
-            {/*sorteren van producten*/}
-            <Picker selectedValue={nieuwsSortOption} onValueChange={setNieuwsSortOption} style={styles.picker}>
-                <Picker.Item label="Sort by" value="" />
-                <Picker.Item label="Datum: Nieuwste eerst" value="date-newest" />
-                <Picker.Item label="Datum: Oudste eerst" value="date-oldest" />
-            </Picker>
+                {/*sorteren van producten*/}
+                <Picker selectedValue={nieuwsSortOption} onValueChange={setNieuwsSortOption} style={styles.picker}>
+                    <Picker.Item label="Sort by" value="" />
+                    <Picker.Item label="Datum: Nieuwste eerst" value="date-newest" />
+                    <Picker.Item label="Datum: Oudste eerst" value="date-oldest" />
+                </Picker>
 
-            {/*search van producten*/}
-            <TextInput style={styles.searchInput} placeholder="Zoek nieuws..." value={nieuwsSearchQuery} onChangeText={setNieuwsSearchQuery} />
+                {/*search van producten*/}
+                <TextInput style={styles.searchInput} placeholder="Zoek nieuws..." value={nieuwsSearchQuery} onChangeText={setNieuwsSearchQuery} />
 
-            {sortedNieuws.map((nieuws) => (
-                <NieuwsCard
-                    key={nieuws.id}
-                    title={nieuws.name}
-                    description={nieuws.description}
-                    date={nieuws.date}
-                    image={nieuws.image}
-                    schoolnaam={nieuws.schoolNaam}
-                    tag={nieuws.tag}
-                    kleur={nieuws.kleur}
-                    onPress={() => navigation.navigate('NieuwsDetail', nieuws)}
-                />
-            ))}
-    </View>
+                {sortedNieuws.map((nieuws) => (
+                    <NieuwsCard
+                        key={nieuws.id}
+                        title={nieuws.name}
+                        description={nieuws.description}
+                        date={nieuws.date}
+                        image={nieuws.image}
+                        schoolnaam={nieuws.schoolNaam}
+                        tag={nieuws.tag}
+                        kleur={nieuws.kleur}
+                        onPress={() => navigation.navigate('NieuwsDetail', nieuws)}
+                    />
+                ))}
+            </View>
         </ScrollView>
     );
 }
