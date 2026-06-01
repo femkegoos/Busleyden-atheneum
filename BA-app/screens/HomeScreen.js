@@ -116,10 +116,21 @@ const HomeScreen = ({ navigation }) => {
             })));
 
             setNieuws(newsData.items.map((item) => {
-                // school kan een string-ID of array zijn, dit handelt beide af
-                const schoolId = Array.isArray(item.fieldData.school)
-                    ? item.fieldData.school[0]
-                    : item.fieldData.school;
+                const rawTag = item.fieldData["tag-nieuws"] || "";
+
+                let schoolId;
+                if (Array.isArray(item.fieldData.school)) {
+                    schoolId = item.fieldData.school[0];
+                } else {
+                    schoolId = item.fieldData.school;
+                }
+
+                let vertaaldeTag;
+                if (tagMap[rawTag]) {
+                    vertaaldeTag = tagMap[rawTag];
+                } else {
+                    vertaaldeTag = rawTag;
+                }
 
                 return {
                     id: item.id,
@@ -130,7 +141,7 @@ const HomeScreen = ({ navigation }) => {
                     image: { uri: item.fieldData["cover-nieuws-foto"]?.url },
                     sfeerfotos: item.fieldData.sfeerfotos || [],
                     school: item.fieldData.school || "",
-                    tag: item.fieldData["tag-nieuws"] || "",
+                    tag: vertaaldeTag,
                     kleur: campusKleuren[schoolId] || "#4CAF50",
                     schoolNaam: campusNamen[schoolId] || "",
                 };
@@ -226,7 +237,7 @@ const HomeScreen = ({ navigation }) => {
                     date={nieuws.date}
                     image={nieuws.image}
                     schoolnaam={nieuws.schoolNaam}
-                    tag={tagMap[nieuws.tag] || nieuws.tag}
+                    tag={nieuws.tag}
                     kleur={nieuws.kleur}
                     onPress={() => navigation.navigate('NieuwsDetail', nieuws)}
                 />
