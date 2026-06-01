@@ -63,10 +63,11 @@ const HomeScreen = ({ navigation }) => {
     };
 
     {/*sorteren van de producten */ }
-    const filteredProducts = products.filter((p) =>
-        (selectedCategory === "" || p.category === selectedCategory) &&
-        p.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+   const filteredProducts = products.filter((p) =>
+    (selectedCategory === "" || p.category === selectedCategory) &&
+    p.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    (!promotions || p.isPromo === true)  
+);
 
     {/*filteren van de producten op categorie, naam en prijs */ }
     const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -109,25 +110,25 @@ const HomeScreen = ({ navigation }) => {
 
 
             setProducts(productData.items.map((item) => {
-    const rawCategory = item.product.fieldData.category?.[0] || "";
+                const rawCategory = item.product.fieldData.category?.[0] || "";
 
-    let vertaaldeCategory;
-    if (categoryNames[rawCategory]) {
-        vertaaldeCategory = categoryNames[rawCategory];
-    } else {
-        vertaaldeCategory = rawCategory;
-    }
+                let vertaaldeCategory;
+                if (categoryNames[rawCategory]) {
+                    vertaaldeCategory = categoryNames[rawCategory];
+                } else {
+                    vertaaldeCategory = rawCategory;
+                }
 
-    return {
-        id: item.product.id,
-        title: item.product.fieldData.name,
-        description: item.product.fieldData.description || "",
-        price: (item.skus[0]?.fieldData.price.value || 0) / 100,
-        image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
-        category: vertaaldeCategory,
-        isPromo: item.product.fieldData.promotie || false,
-    };
-}));
+                return {
+                    id: item.product.id,
+                    title: item.product.fieldData.name,
+                    description: item.product.fieldData.description || "",
+                    price: (item.skus[0]?.fieldData.price.value || 0) / 100,
+                    image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
+                    category: vertaaldeCategory,
+                    isPromo: item.product.fieldData.promotie || false,
+                };
+            }));
 
             setNieuws(newsData.items.map((item) => {
                 const rawTag = item.fieldData["tag-nieuws"] || "";
